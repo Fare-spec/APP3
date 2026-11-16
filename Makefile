@@ -1,35 +1,54 @@
-all: main acte1 acte2 acte3 acte3b acte4
+CC := clang
 
+SRC_DIR := src
+OBJ_DIR := build
+BIN_DIR := bin
 
-CC=clang
-CFLAGS+= -g -Wall -Wextra -Werror -Wno-unused-parameter -gdwarf-4
+CFLAGS += -g -Wall -Wextra -Werror -Wno-unused-parameter -gdwarf-4
 
+OBJS := $(addprefix $(OBJ_DIR)/,arbres.o arbresphylo.o listes.o common_tests.o)
+
+ACTES := acte1 acte2 acte3 acte3b acte4
+
+.PHONY: all main $(ACTES) tests_acte1 tests_acte2 tests_acte3 tests_acte3b tests_acte4 clean clear
+
+all: main $(ACTES)
+
+$(OBJ_DIR) $(BIN_DIR):
+	mkdir -p $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+main: $(BIN_DIR)/main
+
+$(BIN_DIR)/main: $(OBJ_DIR)/main.o \
+                 $(OBJ_DIR)/arbresphylo.o \
+                 $(OBJ_DIR)/arbres.o \
+                 $(OBJ_DIR)/listes.o | $(BIN_DIR)
+	$(CC) $(CFLAGS) $^ -o $@
+
+$(ACTES): %: $(BIN_DIR)/%
+
+$(BIN_DIR)/%: $(OBJ_DIR)/%.o $(OBJS) | $(BIN_DIR)
+	$(CC) $(CFLAGS) $^ -o $@
 
 tests_acte1: acte1
-	@set -e; for f in $$(cat tests_acte1/liste.txt); do echo Test: $$f; ./acte1 tests_acte1/$$f; done; printf "\033[0;32mSuccès\033[0m sur l'acte I !\n"
+	@set -e; for f in $$(cat tests_acte1/liste.txt); do echo Test: $$f; $(BIN_DIR)/acte1 tests_acte1/$$f; done; printf "\033[0;32mSuccès\033[0m sur l'acte I !\n"
 
 tests_acte2: acte2
-	@set -e; for f in $$(cat tests_acte2/liste.txt); do echo Test: $$f; ./acte2 tests_acte2/$$f; done; printf "\033[0;32mSuccès\033[0m sur l'acte II !\n"
+	@set -e; for f in $$(cat tests_acte2/liste.txt); do echo Test: $$f; $(BIN_DIR)/acte2 tests_acte2/$$f; done; printf "\033[0;32mSuccès\033[0m sur l'acte II !\n"
 
 tests_acte3: acte3
-	@set -e; for f in $$(cat tests_acte3/liste.txt); do echo Test: $$f; ./acte3 tests_acte3/$$f; done; printf "\033[0;32mSuccès\033[0m sur l'acte III-A !\n"
+	@set -e; for f in $$(cat tests_acte3/liste.txt); do echo Test: $$f; $(BIN_DIR)/acte3 tests_acte3/$$f; done; printf "\033[0;32mSuccès\033[0m sur l'acte III-A !\n"
 
 tests_acte3b: acte3b
-	@set -e; for f in $$(cat tests_acte3b/liste.txt); do echo Test: $$f; ./acte3b tests_acte3b/$$f; done; printf "\033[0;32mSuccès\033[0m sur l'acte III-B !\n"
+	@set -e; for f in $$(cat tests_acte3b/liste.txt); do echo Test: $$f; $(BIN_DIR)/acte3b tests_acte3b/$$f; done; printf "\033[0;32mSuccès\033[0m sur l'acte III-B !\n"
 
 tests_acte4: acte4
-	@set -e; for f in $$(cat tests_acte4/liste.txt); do echo Test: $$f; ./acte4 tests_acte4/$$f; done; printf "\033[0;32mSuccès\033[0m sur l'acte IV !\n"
-
-OBJS= arbres.o arbresphylo.o listes.o common_tests.o
-acte1: acte1.o $(OBJS)
-acte2: acte2.o $(OBJS)
-acte3: acte3.o $(OBJS)
-acte3b: acte3b.o $(OBJS)
-acte4: acte4.o $(OBJS)
-
-.PHONY: tests_acte1 tests_acte2 tests_acte3 tests_acte3b tests_acte4
-
-main: main.o arbresphylo.o arbres.o listes.o
+	@set -e; for f in $$(cat tests_acte4/liste.txt); do echo Test: $$f; $(BIN_DIR)/acte4 tests_acte4/$$f; done; printf "\033[0;32mSuccès\033[0m sur l'acte IV !\n"
 
 clean:
-	rm -f main *.o
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
+
+clear: clean
