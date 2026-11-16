@@ -5,3 +5,5 @@ bin/
 .env
 .venv
 *.md
+compile_commands.json
+.cache/

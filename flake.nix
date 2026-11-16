@@ -11,26 +11,16 @@
     in
     {
       devShells.${system}.default = pkgs.mkShell {
-        nativeBuildInputs = with pkgs; [
+        packages = with pkgs; [
+          clang-tools # wrapped clangd (knows Nix include paths), keep before clang
           clang
+          bear # `bear -- make` generates compile_commands.json for clangd
           gnumake
           gdb
           valgrind
           perf
           time
         ];
-
-        buildInputs = with pkgs; [
-
-          clang
-          gnumake
-          gdb
-          valgrind
-          perf
-          time
-
-        ];
-
       };
     };
 }

@@ -6,7 +6,23 @@
 #include <stdlib.h>
 #include <string.h>
 
-void analyse_arbre(arbre racine, int *nb_esp, int *nb_carac) {}
+static void rec_analyse(const noeud *n, int *nb_esp, int *nb_carac) {
+  if (n == NULL) {
+    return;
+  }
+  if (n->gauche == NULL && n->droit == NULL) {
+    (*nb_esp)++;
+  } else {
+    (*nb_carac)++;
+    rec_analyse(n->gauche, nb_esp, nb_carac);
+    rec_analyse(n->droit, nb_esp, nb_carac);
+  }
+}
+
+void analyse_arbre(arbre racine, int *nb_esp, int *nb_carac) {
+  *nb_carac = 0, *nb_esp = 0;
+  rec_analyse(racine, nb_esp, nb_carac);
+}
 
 /* ACTE II */
 /* Recherche l'espece dans l'arbre. Modifie la liste passée en paramètre pour y
