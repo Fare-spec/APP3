@@ -1,0 +1,6 @@
+*.pdf
+*.zip
+build/
+bin/
+.env
+.venv
