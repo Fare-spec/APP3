@@ -4,4 +4,4 @@ build/
 bin/
 .env
 .venv
-TODO.md
+*.md

@@ -4,29 +4,38 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* fichier à compléter au besoin */
+void init_liste_vide(liste_t *L) { L->tete = NULL; }
 
-void init_liste_vide(liste_t *L)
-{
-       printf ("<<<<< À faire: fonction init_liste_vide fichier " __FILE__ " >>>>>\n");
-    /* a completer */
+void liberer_liste(liste_t *L) {
+  cellule_t *cell = L->tete;
+  while (cell != NULL) {
+    cellule_t *next = cell->suivant;
+    free(cell);
+    cell = next;
+  }
+  L->tete = NULL;
 }
 
-/*
- * Supprime toutes les cellules d'une liste L, sans faire de free sur
- * L elle-même.
- */
-void liberer_liste(liste_t *L)
-{
-       printf ("<<<<< À faire: fonction liberer_liste fichier " __FILE__ " >>>>>\n");
-    /* a completer */
-}
+int ajouter_tete(liste_t *L, string c) {
+  cellule_t *cell = malloc(sizeof(cellule_t));
 
-
-int ajouter_tete(liste_t *L, string c)
-{   /* retourne 0 si OK, 1 sinon  */
-       printf ("<<<<< À faire: fonction ajouter_tete fichier " __FILE__ " >>>>>\n");
-    /* a completer */
+  if (cell == NULL) {
     return 1;
+  }
+
+  cell->val = c;
+  cell->suivant = L->tete;
+  L->tete = cell;
+  return 0;
 }
 
+void helper(const liste_t *L) {
+  int i = 0;
+  cellule_t *cell = L->tete;
+  while (cell != NULL) {
+    i += 1;
+    printf("%s\n", cell->val);
+    cell = cell->suivant;
+  }
+  printf("%d\n", i);
+}

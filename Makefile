@@ -4,7 +4,7 @@ SRC_DIR := src
 OBJ_DIR := build
 BIN_DIR := bin
 
-CFLAGS += -g -Wall -Wextra -Werror -Wno-unused-parameter -gdwarf-4
+CFLAGS += -g -Wall -Wextra -Werror -Wno-unused-parameter -gdwarf-4 -Wno-unused-result
 
 OBJS := $(addprefix $(OBJ_DIR)/,arbres.o arbresphylo.o listes.o common_tests.o)
 
