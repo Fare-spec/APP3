@@ -60,6 +60,8 @@ int main(int argc, char *argv[]) {
   printf("Nombre d'especes de l'arbre: %d\n", nombre_especes);
   printf("Nombre de caractéristiques de l'arbre: %d\n", nombre_caract);
 
+  afficher_par_niveau(mon_arbre, stdout);
+
   liste_t seq;
   init_liste_vide(&seq);
 

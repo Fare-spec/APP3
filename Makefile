@@ -6,7 +6,7 @@ BIN_DIR := bin
 
 CFLAGS += -g -Wall -Wextra -Werror -Wno-unused-parameter -gdwarf-4 -Wno-unused-result
 
-OBJS := $(addprefix $(OBJ_DIR)/,arbres.o arbresphylo.o listes.o common_tests.o)
+OBJS := $(addprefix $(OBJ_DIR)/,arbres.o arbresphylo.o listes.o queue.o common_tests.o)
 
 ACTES := acte1 acte2 acte3 acte3b acte4
 
@@ -25,7 +25,8 @@ main: $(BIN_DIR)/main
 $(BIN_DIR)/main: $(OBJ_DIR)/main.o \
                  $(OBJ_DIR)/arbresphylo.o \
                  $(OBJ_DIR)/arbres.o \
-                 $(OBJ_DIR)/listes.o | $(BIN_DIR)
+                 $(OBJ_DIR)/listes.o \
+                 $(OBJ_DIR)/queue.o | $(BIN_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
 $(ACTES): %: $(BIN_DIR)/%

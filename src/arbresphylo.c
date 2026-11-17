@@ -1,6 +1,7 @@
 #include "arbresphylo.h"
 #include "arbres.h"
 #include "listes.h"
+#include "queue.h"
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
@@ -105,8 +106,40 @@ int ajouter_espece(arbre *a, char *espece, cellule_t *seq) {
  * Appeler la fonction avec fout=stdin pour afficher sur la sortie standard.
  */
 void afficher_par_niveau(arbre racine, FILE *fout) {
-  printf("<<<<< À faire: fonction afficher_par_niveau fichier " __FILE__
-         " >>>>>\n");
+  if (racine == NULL) {
+    return;
+  }
+  int nb_spec, nb_car;
+  analyse_arbre(racine, &nb_spec, &nb_car);
+  queue q = init_q(nb_car + nb_spec);
+  push(&q, racine);
+
+  while (!empty_queue(&q)) {
+    int j = (q.tail - q.head);
+    int leaf = 0;
+    for (int i = 0; i < j; i++) {
+      noeud *n = pop(&q);
+      if (!is_leaf(n)) {
+        fprintf(fout, "%s ", n->valeur);
+        leaf = 1;
+      }
+
+      if (!(n->gauche == NULL)) {
+
+        push(&q, n->gauche);
+      }
+
+      if (!(n->droit == NULL)) {
+
+        push(&q, n->droit);
+      }
+    }
+    if (leaf) {
+      fprintf(fout, "\n");
+    }
+  }
+  free_queue(&q);
+  return;
 }
 
 // Acte 4
