@@ -81,7 +81,9 @@ static int add_specie(arbre *a, const char *specie, const cellule_t *seq) {
   } else {
     if (is_leaf(*a)) {
       if (seq == NULL) {
-        printf("Cannot insert an empty sequence to the existing leaf.");
+        fprintf(stderr,
+                "Ne peut ajouter %s: possède les mêmes caractères que %s.\n",
+                specie, (*a)->valeur);
         return 1;
       }
       arbre left = (*a);
@@ -207,5 +209,9 @@ static int ajouter_carac_rec(arbre *a, char *carac, const cellule_t *seq,
 }
 
 int ajouter_carac(arbre *a, char *carac, cellule_t *seq) {
-  return ajouter_carac_rec(a, carac, seq, taille_liste(seq));
+  if (ajouter_carac_rec(a, carac, seq, taille_liste(seq))) {
+    return 1;
+  }
+  fprintf(stderr, "Ne peut ajouter %s: ne forme pas un sous-arbre.\n", carac);
+  return 0;
 }

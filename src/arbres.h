@@ -32,6 +32,8 @@ int depth_tree(const noeud *racine);
 /* Fonction d'affichage, à remplir */
 void affiche_arbre(arbre);
 
+void ecrire_dot(arbre racine, FILE *fout);
+
 /* Macros pour de l'affichage uniquement si DEBUG est != 0 */
 extern int DEBUG;
 

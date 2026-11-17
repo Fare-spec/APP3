@@ -1,0 +1,6 @@
+# table de correspondance d'exemple
+caracteristiques vertebres machoires plumes
+lapin 1 1 0
+truite 1 0 0
+mouche 0 0 1
+poulet 1 0 1

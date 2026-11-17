@@ -134,3 +134,27 @@ void affiche_arbre(noeud *racine) {
   }
   affiche_sous_arbre(racine, "", "", true, true);
 }
+
+static void ecrire_dot_sous_arbre(const noeud *n, FILE *fout) {
+  if (n->gauche != NULL) {
+    fprintf(fout, "  \"%s\" -> \"%s\" [label = \"non\"]\n", n->valeur,
+            n->gauche->valeur);
+    ecrire_dot_sous_arbre(n->gauche, fout);
+  }
+  if (n->droit != NULL) {
+    fprintf(fout, "  \"%s\" -> \"%s\" [label = \"oui\"]\n", n->valeur,
+            n->droit->valeur);
+    ecrire_dot_sous_arbre(n->droit, fout);
+  }
+}
+
+void ecrire_dot(arbre racine, FILE *fout) {
+  fprintf(fout, "digraph arbre {\n");
+  if (racine != NULL && racine->gauche == NULL && racine->droit == NULL) {
+    fprintf(fout, "  \"%s\"\n", racine->valeur);
+  }
+  if (racine != NULL) {
+    ecrire_dot_sous_arbre(racine, fout);
+  }
+  fprintf(fout, "}\n");
+}

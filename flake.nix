@@ -20,6 +20,10 @@
           valgrind
           perf
           time
+          rustc
+          cargo
+          rustfmt
+          clippy
         ];
       };
     };
