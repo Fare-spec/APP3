@@ -3,7 +3,6 @@
 #include "listes.h"
 #include <assert.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 static void rec_analyse(const noeud *n, int *nb_esp, int *nb_carac) {
@@ -24,13 +23,37 @@ void analyse_arbre(arbre racine, int *nb_esp, int *nb_carac) {
   rec_analyse(racine, nb_esp, nb_carac);
 }
 
+static int rec_search(const noeud *n, char *espece, liste_t *seq) {
+  int g = 1, d = 1;
+  if (n == NULL) {
+    return 1;
+  }
+  if (n->gauche == NULL && n->droit == NULL) {
+    return !(strcmp(espece, n->valeur) == 0);
+  } else {
+    g = rec_search(n->gauche, espece, seq);
+    if (g) {
+      d = rec_search(n->droit, espece, seq);
+    }
+  }
+
+  if (g == 0) {
+    return 0;
+  }
+  if (d == 0) {
+    ajouter_tete(seq, n->valeur);
+    return 0;
+  }
+  return 1;
+}
+
 /* ACTE II */
 /* Recherche l'espece dans l'arbre. Modifie la liste passée en paramètre pour y
  * mettre les caractéristiques. Retourne 0 si l'espèce a été retrouvée, 1 sinon.
  */
 int rechercher_espece(arbre racine, char *espece, liste_t *seq) {
-  /* à compléter */
-  return 1;
+
+  return rec_search(racine, espece, seq);
 }
 
 /* Doit renvoyer 0 si l'espece a bien ete ajoutee, 1 sinon, et ecrire un
