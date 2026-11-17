@@ -142,9 +142,70 @@ void afficher_par_niveau(arbre racine, FILE *fout) {
   return;
 }
 
-// Acte 4
+static int dans_liste(const cellule_t *seq, const char *nom) {
+  for (const cellule_t *c = seq; c != NULL; c = c->suivant) {
+    if (strcmp(c->val, nom) == 0) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+static int taille_liste(const cellule_t *seq) {
+  int n = 0;
+  for (const cellule_t *c = seq; c != NULL; c = c->suivant) {
+    n++;
+  }
+  return n;
+}
+
+static void compter(const noeud *n, const cellule_t *seq, int *total,
+                    int *dans) {
+  if (n == NULL) {
+    return;
+  }
+  if (is_leaf(n)) {
+    (*total)++;
+    if (dans_liste(seq, n->valeur)) {
+      (*dans)++;
+    }
+  } else {
+    compter(n->gauche, seq, total, dans);
+    compter(n->droit, seq, total, dans);
+  }
+}
+
+static int ajouter_carac_rec(arbre *a, char *carac, const cellule_t *seq,
+                             int taille) {
+  if (*a == NULL) {
+    return 0;
+  }
+
+  int total = 0, dans = 0;
+  compter(*a, seq, &total, &dans);
+  if (total == taille && dans == taille) {
+    noeud *n = nouveau_noeud();
+    n->valeur = strdup(carac);
+    n->droit = *a;
+    *a = n;
+    return 1;
+  }
+
+  int g_total = 0, g_dans = 0;
+  compter((*a)->gauche, seq, &g_total, &g_dans);
+  if (g_dans == taille) {
+    return ajouter_carac_rec(&(*a)->gauche, carac, seq, taille);
+  }
+
+  int d_total = 0, d_dans = 0;
+  compter((*a)->droit, seq, &d_total, &d_dans);
+  if (d_dans == taille) {
+    return ajouter_carac_rec(&(*a)->droit, carac, seq, taille);
+  }
+
+  return 0;
+}
 
 int ajouter_carac(arbre *a, char *carac, cellule_t *seq) {
-  printf("<<<<< À faire: fonction ajouter_carac fichier " __FILE__ " >>>>>\n");
-  return 0;
+  return ajouter_carac_rec(a, carac, seq, taille_liste(seq));
 }
