@@ -23,7 +23,7 @@ void analyse_arbre(arbre racine, int *nb_esp, int *nb_carac) {
   rec_analyse(racine, nb_esp, nb_carac);
 }
 
-static int rec_search(const noeud *n, char *espece, liste_t *seq) {
+static int rec_search(const noeud *n, const char *espece, liste_t *seq) {
   int g = 1, d = 1;
   if (n == NULL) {
     return 1;
@@ -47,19 +47,58 @@ static int rec_search(const noeud *n, char *espece, liste_t *seq) {
   return 1;
 }
 
-/* ACTE II */
-/* Recherche l'espece dans l'arbre. Modifie la liste passée en paramètre pour y
- * mettre les caractéristiques. Retourne 0 si l'espèce a été retrouvée, 1 sinon.
- */
 int rechercher_espece(arbre racine, char *espece, liste_t *seq) {
 
   return rec_search(racine, espece, seq);
 }
-
 /* Doit renvoyer 0 si l'espece a bien ete ajoutee, 1 sinon, et ecrire un
  * message d'erreur.
  */
-int ajouter_espece(arbre *a, char *espece, cellule_t *seq) { return 1; }
+static int is_leaf(const noeud *n) {
+  if (n->droit == NULL && n->gauche == NULL) {
+    return 1;
+  }
+  return 0;
+}
+static arbre create_tree(const char *specie, const cellule_t *seq) {
+  if (seq == NULL) {
+    noeud *n = nouveau_noeud();
+    n->valeur = strdup(specie);
+    return n;
+  } else {
+
+    noeud *n = nouveau_noeud();
+    n->valeur = strdup(seq->val);
+    n->droit = create_tree(specie, seq->suivant);
+    return n;
+  }
+}
+
+static int add_specie(arbre *a, const char *specie, const cellule_t *seq) {
+  if (*a == NULL) {
+    (*a) = create_tree(specie, seq);
+  } else {
+    if (is_leaf(*a)) {
+      if (seq == NULL) {
+        printf("Cannot insert an empty sequence to the existing leaf.");
+        return 1;
+      }
+      arbre left = (*a);
+
+      (*a) = create_tree(specie, seq);
+      (*a)->gauche = left;
+      return 0;
+    }
+    return !(seq == NULL) && strcmp((*a)->valeur, seq->val) == 0
+               ? add_specie(&(*a)->droit, specie, seq->suivant)
+               : add_specie(&(*a)->gauche, specie, seq);
+  }
+  return 0;
+}
+
+int ajouter_espece(arbre *a, char *espece, cellule_t *seq) {
+  return add_specie(a, espece, seq);
+}
 
 /* Doit afficher la liste des caractéristiques niveau par niveau, de gauche
  * à droite, dans le fichier fout.
